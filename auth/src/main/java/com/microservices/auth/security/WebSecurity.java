@@ -3,22 +3,27 @@ package com.microservices.auth.security;
 import com.microservices.auth.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import static java.util.Arrays.asList;
 
 @EnableWebSecurity
 public class WebSecurity extends WebSecurityConfigurerAdapter {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    private UserAuthenticationProvider userAuthenticationProvider;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -27,7 +32,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                 .and().csrf().disable().authorizeRequests()
                 .anyRequest().authenticated()
                 .and()
-                .addFilter(new JWTAuthenticationFilter(authenticationManager(), userService))
+                .addFilterAt(new JWTAuthenticationFilter("/login", userAuthenticationProvider), UsernamePasswordAuthenticationFilter.class)
                 .addFilter(new JWTAuthorizationFilter(authenticationManager()))
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
@@ -41,6 +46,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     public AuthenticationManager authManager() throws Exception {
         return this.authenticationManager();
     }
+
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -49,6 +55,9 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         config.addExposedHeader("Authorization");
         config.applyPermitDefaultValues();
         config.addAllowedOrigin("*");
+        config.addAllowedOrigin("/**");
+        config.addExposedHeader("location");
+        config.setAllowedMethods(asList("POST", "OPTIONS", "GET", "PATCH", "DELETE"));
         config.addAllowedMethod("*");
 
         source.registerCorsConfiguration("/**", config);

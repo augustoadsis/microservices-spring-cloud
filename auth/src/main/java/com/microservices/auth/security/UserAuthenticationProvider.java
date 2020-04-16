@@ -23,20 +23,17 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
     @Lazy
     UserService userService;
 
-    @Autowired
-    @Lazy
-    BCryptPasswordEncoder bCryptPasswordEncoder;
-
-    @Autowired
-    DaoAuthenticationProvider databaseAuthenticationProvider;
-
     @Bean
-    protected DaoAuthenticationProvider databaseAuthenticationProvider() {
+    protected DaoAuthenticationProvider userProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         authProvider.setUserDetailsService(userService);
         authProvider.setPasswordEncoder(bCryptPasswordEncoder);
         return authProvider;
     }
+
+    @Autowired
+    @Lazy
+    BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -44,17 +41,15 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
         String username = (authentication.getPrincipal() == null) ? "NONE_PROVIDED": authentication.getName();
         User user = userService.loadUserByUsername(username);
         if(!isNull(user)) {
-            return databaseAuthenticationProvider.authenticate(authentication);
+            return userProvider().authenticate(authentication);
         } else {
             throw new BadCredentialsException("Erro ao autenticar.");
         }
-
     }
 
     @Override
     public boolean supports(Class<?> authentication){
         return UsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication);
     }
-
 
 }

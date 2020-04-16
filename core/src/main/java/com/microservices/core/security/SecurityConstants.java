@@ -1,4 +1,4 @@
-package com.microservices.auth.security;
+package com.microservices.core.security;
 
 public class SecurityConstants {
     public static final String SECRET = "fda5f2765eddcf2dbc48b65056d42fe3";

@@ -1,33 +1,38 @@
 package com.microservices.auth.security;
 
 import com.auth0.jwt.JWT;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.microservices.auth.user.User;
-import com.microservices.auth.user.UserService;
-import com.microservices.core.response.RestResponse;
-import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Collection;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.auth0.jwt.algorithms.Algorithm.HMAC512;
-import static com.microservices.auth.security.SecurityConstants.*;
+import static com.microservices.core.security.SecurityConstants.*;
 
-public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
-    private AuthenticationManager authenticationManager;
+public class JWTAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
+    private AuthenticationProvider authenticationProvider;
 
-    public JWTAuthenticationFilter(AuthenticationManager authenticationManager, UserService userService) {
-        this.authenticationManager = authenticationManager;
+    public JWTAuthenticationFilter(String url, AuthenticationProvider authenticationProvider) {
+        super(new AntPathRequestMatcher(url));
+        this.authenticationProvider = authenticationProvider;
     }
 
     @Override
@@ -35,14 +40,19 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         try {
             User creds = new ObjectMapper().readValue(req.getInputStream(), User.class);
 
-            return authenticationManager.authenticate(
+            return authenticationProvider.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             creds.getUsername(),
                             creds.getPassword(),
                             creds.getAuthorities())
             );
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            try {
+                unsuccessfulAuthentication(req, res, null);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            return null;
         }
     }
 
@@ -50,13 +60,11 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     protected void successfulAuthentication(HttpServletRequest req,
                                             HttpServletResponse res,
                                             FilterChain chain,
-                                            Authentication auth) throws IOException {
-
-        Collection<GrantedAuthority> authorities = (Collection<GrantedAuthority>) auth.getAuthorities();
+                                            Authentication auth) throws IOException, ServletException {
 
         String token = JWT.create()
                 .withSubject(auth.getName())
-                .withArrayClaim("roles", authorities
+                .withArrayClaim("roles", auth.getAuthorities()
                         .stream()
                         .map(o -> ((GrantedAuthority) o).getAuthority())
                         .toArray(String[]::new))
@@ -64,13 +72,24 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 .sign(HMAC512(SECRET.getBytes()));
         res.addHeader(HEADER_STRING, TOKEN_PREFIX + token);
         res.setContentType("application/json");
-        res.getWriter().write(new Gson().toJson(auth));
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        String response = mapper.writeValueAsString(auth.getPrincipal());
+        res.getWriter().write(response);
     }
 
     @Override
-    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException ex) throws IOException {
+    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException {
         response.setContentType("application/json");
-        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-        response.getWriter().write(new Gson().toJson(RestResponse.error(ex, "Authentication error")));
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        Map<String, Object> data = new HashMap<>();
+        data.put("message", "Usuário ou senha inválidos");
+        data.put("errors", Arrays.asList("Usuário ou senha inválidos"));
+        response.getWriter().write(mapper.writeValueAsString(data));
     }
 }
