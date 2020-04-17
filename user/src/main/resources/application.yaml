@@ -12,7 +12,7 @@ eureka:
 
 spring:
   application:
-    name: course
+    name: user
   jpa:
     show-sql: false
     hibernate:

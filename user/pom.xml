@@ -7,9 +7,9 @@
         <artifactId>microservices</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-    <artifactId>course</artifactId>
+    <artifactId>user</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>course</name>
+    <name>user</name>
     <description>Demo project for Spring Boot</description>
 
     <properties>
