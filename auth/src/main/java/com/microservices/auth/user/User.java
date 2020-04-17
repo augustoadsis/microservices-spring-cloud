@@ -22,7 +22,7 @@ import java.util.Collection;
 @Entity
 public class User extends AbstractEntity implements UserDetails {
 
-    String nome;
+    String name;
 
     @Column(unique = true)
     String username;

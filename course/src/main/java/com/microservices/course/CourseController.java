@@ -1,4 +1,4 @@
-package com.microservices.course.courses;
+package com.microservices.course;
 
 import com.microservices.core.response.RestResponse;
 import lombok.extern.slf4j.Slf4j;

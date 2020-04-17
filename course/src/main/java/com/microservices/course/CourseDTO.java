@@ -1,4 +1,4 @@
-package com.microservices.course.courses;
+package com.microservices.course;
 
 
 import lombok.*;

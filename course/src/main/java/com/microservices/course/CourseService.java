@@ -1,4 +1,4 @@
-package com.microservices.course.courses;
+package com.microservices.course;
 
 import com.microservices.core.exceptions.ObjectNotFoundException;
 import com.microservices.core.response.PageService;

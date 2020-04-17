@@ -21,8 +21,8 @@
 
     <modules>
         <module>core</module>
-        <module>course</module>
         <module>auth</module>
+        <module>course</module>
     </modules>
 
     <dependencies>
