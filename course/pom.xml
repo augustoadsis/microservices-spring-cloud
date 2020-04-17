@@ -10,7 +10,7 @@
     </parent>
     <artifactId>course</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>user</name>
+    <name>course</name>
     <description>Demo project for Spring Boot</description>
 
     <properties>

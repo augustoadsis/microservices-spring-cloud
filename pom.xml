@@ -23,6 +23,7 @@
         <module>core</module>
         <module>auth</module>
         <module>course</module>
+        <module>user</module>
     </modules>
 
     <dependencies>
