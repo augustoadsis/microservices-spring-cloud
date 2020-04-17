@@ -4,11 +4,8 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.google.gson.Gson;
-import com.microservices.core.response.RestResponse;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
@@ -37,19 +34,15 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
         try {
             String header = req.getHeader(HEADER_STRING);
 
-            if (header == null || !header.startsWith(TOKEN_PREFIX)) {
-                chain.doFilter(req, res);
-                return;
+            if (header != null && header.startsWith(TOKEN_PREFIX)) {
+                UsernamePasswordAuthenticationToken authentication = getAuthentication(req);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
             }
 
-            UsernamePasswordAuthenticationToken authentication = getAuthentication(req);
-
-            SecurityContextHolder.getContext().setAuthentication(authentication);
             chain.doFilter(req, res);
         } catch (RuntimeException e) {
             res.setContentType("application/json");
             res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            res.getWriter().write(new Gson().toJson(RestResponse.error(e, "Unauthorized")));
         }
     }
 
@@ -75,14 +68,4 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
         return null;
     }
 
-    @Override
-    protected void onUnsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException ex) {
-        response.setContentType("application/json");
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        try {
-            response.getWriter().write(new Gson().toJson(RestResponse.error(ex, "Authentication error")));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 }
