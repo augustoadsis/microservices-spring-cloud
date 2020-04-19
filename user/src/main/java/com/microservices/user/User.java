@@ -1,6 +1,7 @@
 package com.microservices.user;
 
 import com.microservices.core.abstractEntity.AbstractEntity;
+import com.microservices.user.role.Role;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

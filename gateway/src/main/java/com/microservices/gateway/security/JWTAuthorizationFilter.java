@@ -1,4 +1,4 @@
-package com.microservices.gateway.auth.security;
+package com.microservices.gateway.security;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;

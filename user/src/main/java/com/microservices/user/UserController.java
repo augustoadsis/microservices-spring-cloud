@@ -25,8 +25,8 @@ public class UserController {
                                           @RequestParam(value = "orderBy", defaultValue = "name", required = false) String orderBy,
                                           @RequestParam(value = "filter", defaultValue = "ASC", required = false) String filter,
                                           @RequestParam(value = "search", defaultValue = "", required = false) String param) {
-        Page<UserDTO> examDTO = userService.findAll(page, size, orderBy, filter, param);
-        return nonNull(examDTO) ? response.searchOk(examDTO) : response.noContent();
+        Page<UserDTO> userDTO = userService.findAll(page, size, orderBy, filter, param);
+        return nonNull(userDTO) ? response.searchOk(userDTO) : response.noContent();
     }
 
     @GetMapping("/{id}")
@@ -40,10 +40,16 @@ public class UserController {
         return response.ok();
     }
 
+    @PostMapping("/creator")
+    public ResponseEntity<Object> saveCreator(@RequestBody UserDTO userDTO) {
+        userService.saveCreator(userDTO);
+        return response.ok();
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<Object> update(@PathVariable("id") Long id, @RequestBody UserDTO userDTO) {
-        UserDTO exam = userService.update(id, userDTO);
-        return nonNull(exam) ? response.ok(exam) : response.noContent();
+        UserDTO user = userService.update(id, userDTO);
+        return nonNull(user) ? response.ok(user) : response.noContent();
     }
 
     @DeleteMapping("/{id}")

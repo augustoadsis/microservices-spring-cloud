@@ -25,8 +25,8 @@ public class CourseController {
                                           @RequestParam(value = "orderBy", defaultValue = "title", required = false) String orderBy,
                                           @RequestParam(value = "filter", defaultValue = "ASC", required = false) String filter,
                                           @RequestParam(value = "search", defaultValue = "", required = false) String param) {
-        Page<CourseDTO> examDTO = courseService.findAll(page, size, orderBy, filter, param);
-        return nonNull(examDTO) ? response.searchOk(examDTO) : response.noContent();
+        Page<CourseDTO> courseDTO = courseService.findAll(page, size, orderBy, filter, param);
+        return nonNull(courseDTO) ? response.searchOk(courseDTO) : response.noContent();
     }
 
     @GetMapping("/{id}")
@@ -42,8 +42,8 @@ public class CourseController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Object> update(@PathVariable("id") Long id, @RequestBody CourseDTO courseDTO) {
-        CourseDTO exam = courseService.update(id, courseDTO);
-        return nonNull(exam) ? response.ok(exam) : response.noContent();
+        CourseDTO course = courseService.update(id, courseDTO);
+        return nonNull(course) ? response.ok(course) : response.noContent();
     }
 
     @DeleteMapping("/{id}")

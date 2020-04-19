@@ -1,5 +1,6 @@
 package com.microservices.core.response;
 
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import lombok.*;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
@@ -7,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,9 +19,10 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Component
-public class RestResponse {
+public class RestResponse implements Serializable {
 
     private String message;
+    @JsonUnwrapped
     public Object data;
     public List<Object> errors;
     public PageInfo pagination;
@@ -44,7 +47,6 @@ public class RestResponse {
 
     public ResponseEntity<Object> searchOk(Object data){
         RestResponse r = new RestResponse();
-        r.message = "Search ok.";
         r.data = data;
         return ResponseEntity.ok().body(r);
     }

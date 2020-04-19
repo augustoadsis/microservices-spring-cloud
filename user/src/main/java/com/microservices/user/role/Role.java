@@ -1,4 +1,4 @@
-package com.microservices.user;
+package com.microservices.user.role;
 
 import com.microservices.core.abstractEntity.AbstractEntity;
 import lombok.*;

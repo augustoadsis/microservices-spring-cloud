@@ -1,6 +1,7 @@
-package com.microservices.gateway.auth.security;
+package com.microservices.gateway.security;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -22,7 +23,10 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                 .cors()
                 .and().csrf().disable().authorizeRequests()
                 .antMatchers("/auth/**").permitAll()
-                .antMatchers("/course/**").hasAuthority("ADMIN")
+                .antMatchers("/user/v1/users/creator/").permitAll()
+                .antMatchers(HttpMethod.POST, "/user/v1/users/").permitAll()
+                .antMatchers("/user/v1/users/**").hasAuthority("ADMIN")
+                .antMatchers("/course/**").hasAuthority("CREATOR")
                 .anyRequest().authenticated()
                 .and()
                 .addFilter(new JWTAuthorizationFilter(authenticationManager()))

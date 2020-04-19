@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 public class CourseDTO implements Serializable {
 
     private Long id;
+    private Long user;
 
     private String title;
     private String description;
@@ -24,12 +25,10 @@ public class CourseDTO implements Serializable {
 
     public CourseDTO(Course c) {
         this.id = c.getId();
+        this.user = c.getUser();
         this.title = c.getTitle();
         this.description = c.getDescription();
         this.price = c.getPrice();
     }
 
-    public static Set<CourseDTO> fromSet(Set<Course> courses) {
-        return courses.stream().map(c -> new CourseDTO(c)).collect(Collectors.toCollection(LinkedHashSet::new));
-    }
 }

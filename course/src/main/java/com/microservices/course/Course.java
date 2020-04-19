@@ -20,4 +20,6 @@ public class Course extends AbstractEntity {
     private String description;
     private BigDecimal price;
 
+    private Long user;
+
 }
