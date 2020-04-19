@@ -47,6 +47,7 @@ public class RestResponse implements Serializable {
 
     public ResponseEntity<Object> searchOk(Object data){
         RestResponse r = new RestResponse();
+        r.message = "Search ok.";
         r.data = data;
         return ResponseEntity.ok().body(r);
     }
