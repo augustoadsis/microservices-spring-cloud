@@ -21,7 +21,7 @@
     <modules>
         <module>core</module>
         <module>auth</module>
-        <module>course</module>
+        <module>subscription</module>
         <module>user</module>
     </modules>
 

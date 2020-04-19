@@ -29,9 +29,3 @@ build/
 
 ### VS Code ###
 .vscode/
-/.mvn/
-/subscription.iml
-/HELP.md
-/mvnw
-/target/
-/mvnw.cmd
