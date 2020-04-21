@@ -1,13 +1,10 @@
 package com.microservices.content;
 
-import com.microservices.core.response.RestResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/v1/contents")
@@ -16,12 +13,30 @@ public class ContentController {
 
     @Autowired
     private ContentService contentService;
-    @Autowired
-    private RestResponse response;
+
+    @GetMapping(produces = "application/stream+json")
+    public Flux<Content> findAll() {
+        return contentService.findAll();
+    }
 
     @GetMapping("/{title}")
     public Flux<Content> findByTitle(@PathVariable("title") String title) {
         return contentService.findByTitle(title);
+    }
+
+    @PostMapping
+    public Mono<Content> create(@RequestBody Content content) {
+        return contentService.save(content);
+    }
+
+    @PutMapping
+    public Mono<Content> update(@RequestBody Mono<Content> content) {
+        return content.flatMap(c -> contentService.save(c));
+    }
+
+    @DeleteMapping("/{id}")
+    public Mono<Void> delete(@PathVariable("id") Long id) {
+        return contentService.delete(id);
     }
 
 }
