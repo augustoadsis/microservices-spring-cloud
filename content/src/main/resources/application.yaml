@@ -1,0 +1,27 @@
+server:
+  port: 0
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    service-url:
+      defaultZone: http://localhost:8081/eureka/
+    register-with-eureka: true
+
+
+spring:
+  application:
+    name: content
+  jmx:
+    enabled: false
+  r2dbc:
+    url: r2dbc:mysql://localhost:3306/microservices?allowPublicKeyRetrieval=true&sslMode=DISABLED
+    username: root
+    password: root
+    initialization-mode: always
+
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+    default-property-inclusion: non_null
