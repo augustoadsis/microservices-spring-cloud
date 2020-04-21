@@ -31,6 +31,6 @@ public class ContentService {
     }
 
     public Flux<Content> findByCourse(Long id) {
-        return contentRepository.findByCourse(id).delayElements(Duration.ofMillis(300));
+        return contentRepository.findByCourse(id);
     }
 }
