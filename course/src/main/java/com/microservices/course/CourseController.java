@@ -1,11 +1,14 @@
 package com.microservices.course;
 
 import com.microservices.core.response.RestResponse;
+import com.microservices.course.content.ContentDTO;
+import com.microservices.course.content.ContentService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 
 import static java.util.Objects.nonNull;
 
@@ -16,6 +19,8 @@ public class CourseController {
 
     @Autowired
     private CourseService courseService;
+    @Autowired
+    private ContentService contentService;
     @Autowired
     private RestResponse response;
 
@@ -50,6 +55,11 @@ public class CourseController {
     public ResponseEntity<Object> delete(@PathVariable Long id) {
         courseService.delete(id);
         return response.noContent();
+    }
+
+    @GetMapping(path = "/content/{id}", produces = "application/stream+json")
+    public Flux<ContentDTO> findContentByCourse(@PathVariable Long id) {
+        return contentService.getContent(id);
     }
 
 }

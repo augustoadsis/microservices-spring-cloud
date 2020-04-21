@@ -1,2 +1,2 @@
-INSERT INTO content (title, url)
-VALUES ('abc', 'my test content');
+INSERT INTO content (title, url, course)
+VALUES ('abc', 'my test content', 1);

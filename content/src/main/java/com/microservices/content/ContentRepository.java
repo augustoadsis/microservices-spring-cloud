@@ -9,4 +9,7 @@ interface ContentRepository extends ReactiveCrudRepository<Content, Long> {
 
     @Query("SELECT * FROM content WHERE title like :_title")
     Flux<Content> findByTitle(@Param("_title") String title);
+
+    @Query("SELECT * FROM content WHERE course = :_course")
+    Flux<Content> findByCourse(@Param("_course") Long course);
 }

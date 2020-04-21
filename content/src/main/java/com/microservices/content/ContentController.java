@@ -24,6 +24,11 @@ public class ContentController {
         return contentService.findByTitle(title);
     }
 
+    @GetMapping("/course/{id}")
+    public Flux<Content> findByCourse(@PathVariable("id") Long id) {
+        return contentService.findByCourse(id);
+    }
+
     @PostMapping
     public Mono<Content> create(@RequestBody Content content) {
         return contentService.save(content);

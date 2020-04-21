@@ -29,4 +29,8 @@ public class ContentService {
     public Mono<Void> delete(Long id) {
         return contentRepository.deleteById(id);
     }
+
+    public Flux<Content> findByCourse(Long id) {
+        return contentRepository.findByCourse(id).delayElements(Duration.ofMillis(300));
+    }
 }
