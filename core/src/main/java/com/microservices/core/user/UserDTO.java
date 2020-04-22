@@ -10,6 +10,7 @@ import java.io.Serializable;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class UserDTO implements Serializable {
 
     private Long id;

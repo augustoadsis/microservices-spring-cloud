@@ -2,8 +2,8 @@ package com.microservices.course;
 
 import com.microservices.core.exceptions.ObjectNotFoundException;
 import com.microservices.core.response.PageService;
-import com.microservices.core.user.UserDTO;
 import com.microservices.core.user.AuthService;
+import com.microservices.core.user.UserDTO;
 import lombok.SneakyThrows;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -65,6 +66,15 @@ public class CourseService {
         Course course = findCourseById(id).orElseThrow(() -> new ObjectNotFoundException("Course not found"));
         course.softDelete();
         courseRepository.save(course);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteByUser(Long id) {
+        List<Course> courses = courseRepository.findAllByUser(id);
+        courses.forEach(c -> {
+            c.softDelete();
+            courseRepository.save(c);
+        });
     }
 
 }

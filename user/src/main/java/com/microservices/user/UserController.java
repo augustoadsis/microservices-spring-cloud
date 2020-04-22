@@ -1,6 +1,8 @@
 package com.microservices.user;
 
 import com.microservices.core.response.RestResponse;
+import com.microservices.user.mq.UserProducer;
+import com.microservices.user.mq.UserSource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,6 +20,10 @@ public class UserController {
     private UserService userService;
     @Autowired
     private RestResponse response;
+    @Autowired
+    private UserSource userSource;
+    @Autowired
+    private UserProducer userProducer;
 
     @GetMapping
     public ResponseEntity<Object> findAll(@RequestParam(value = "page", defaultValue = "0", required = false) Integer page,
@@ -54,7 +60,10 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> delete(@PathVariable Long id) {
+        UserDTO user = userService.findById(id);
         userService.delete(id);
+        // this method triggers remove all courses and subscriptions
+        userProducer.sendMessageProduct(user, userSource);
         return response.noContent();
     }
 
