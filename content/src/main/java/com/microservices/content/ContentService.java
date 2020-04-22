@@ -6,8 +6,6 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.time.Duration;
-
 @Service
 public class ContentService {
 
@@ -15,7 +13,7 @@ public class ContentService {
     private ContentRepository contentRepository;
 
     public Flux<Content> findAll() {
-        return contentRepository.findAll().delayElements(Duration.ofMillis(300));
+        return contentRepository.findAll();
     }
 
     public Flux<Content> findByTitle(String title) {
