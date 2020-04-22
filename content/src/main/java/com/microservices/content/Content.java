@@ -10,6 +10,7 @@ import org.springframework.data.relational.core.mapping.Table;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 @Table("content")
 public class Content {
 

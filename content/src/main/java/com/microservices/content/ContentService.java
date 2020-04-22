@@ -1,12 +1,14 @@
 package com.microservices.content;
 
 import com.microservices.core.exceptions.ObjectNotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
+@Slf4j
 public class ContentService {
 
     @Autowired
@@ -30,5 +32,10 @@ public class ContentService {
 
     public Flux<Content> findByCourse(Long id) {
         return contentRepository.findByCourse(id);
+    }
+
+    public Mono<Void> deleteByCourse(Long id) {
+        contentRepository.deleteAll(findByCourse(id));
+        return Mono.empty();
     }
 }

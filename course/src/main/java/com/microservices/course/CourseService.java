@@ -4,7 +4,10 @@ import com.microservices.core.exceptions.ObjectNotFoundException;
 import com.microservices.core.response.PageService;
 import com.microservices.core.user.AuthService;
 import com.microservices.core.user.UserDTO;
+import com.microservices.course.mq.CourseProducer;
+import com.microservices.course.mq.CourseSource;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -17,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class CourseService {
 
     @Autowired
@@ -25,6 +29,11 @@ public class CourseService {
     private ModelMapper modelMapper;
     @Autowired
     private AuthService authService;
+
+    @Autowired
+    private CourseSource courseSource;
+    @Autowired
+    private CourseProducer courseProducer;
 
     public CourseDTO findById(Long id) {
         return findCourseById(id).map(CourseDTO::new).orElseThrow(() -> new ObjectNotFoundException("Course not found"));
@@ -66,14 +75,17 @@ public class CourseService {
         Course course = findCourseById(id).orElseThrow(() -> new ObjectNotFoundException("Course not found"));
         course.softDelete();
         courseRepository.save(course);
+        courseProducer.sendMessageCourse(new CourseDTO(course), courseSource);
     }
 
     @Transactional(rollbackFor = Exception.class)
     public void deleteByUser(Long id) {
         List<Course> courses = courseRepository.findAllByUser(id);
         courses.forEach(c -> {
+            log.info("Removing course: " + c.toString());
             c.softDelete();
             courseRepository.save(c);
+            courseProducer.sendMessageCourse(new CourseDTO(c), courseSource);
         });
     }
 

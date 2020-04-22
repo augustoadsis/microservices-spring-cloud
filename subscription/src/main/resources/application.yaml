@@ -30,3 +30,17 @@ spring:
     serialization:
       write-dates-as-timestamps: false
     default-property-inclusion: non_null
+
+  cloud:
+    stream:
+      bindings:
+        user-channel:
+          destination: user-processor
+        course-channel:
+          destination: course-processor
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest

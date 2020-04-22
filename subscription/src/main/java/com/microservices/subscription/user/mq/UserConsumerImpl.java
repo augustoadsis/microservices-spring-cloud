@@ -1,26 +1,25 @@
-package com.microservices.course.mq;
+package com.microservices.subscription.user.mq;
 
 import com.microservices.core.user.UserDTO;
-import com.microservices.course.CourseService;
+import com.microservices.subscription.SubscriptionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.annotation.StreamListener;
-import org.springframework.cloud.stream.messaging.Sink;
 import org.springframework.context.annotation.Lazy;
 
-@EnableBinding(Sink.class)
+@EnableBinding(UserConsumer.class)
 @Slf4j
-public class UserConsumer {
+public class UserConsumerImpl {
 
     @Autowired
     @Lazy
-    CourseService courseService;
+    SubscriptionService subscriptionService;
 
-    @StreamListener(Sink.INPUT)
+    @StreamListener(target = UserConsumer.CHANNEL)
     public void readMessage(UserDTO user) {
-       log.info("Removing courses of author: " + user.toString());
-       courseService.deleteByUser(user.getId());
+        log.info("Removing subscriptions of user: " + user.toString());
+        subscriptionService.deleteByUser(user.getId());
     }
 
 }

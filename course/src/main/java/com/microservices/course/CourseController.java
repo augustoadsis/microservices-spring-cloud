@@ -54,6 +54,7 @@ public class CourseController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> delete(@PathVariable Long id) {
         courseService.delete(id);
+
         return response.noContent();
     }
 

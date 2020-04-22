@@ -34,8 +34,10 @@ spring:
   cloud:
     stream:
       bindings:
-        input:
+        user-channel:
           destination: user-processor
+        course-channel:
+          destination: course-processor
 
   rabbitmq:
     host: localhost

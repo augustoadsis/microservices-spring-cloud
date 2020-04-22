@@ -63,7 +63,7 @@ public class UserController {
         UserDTO user = userService.findById(id);
         userService.delete(id);
         // this method triggers remove all courses and subscriptions
-        userProducer.sendMessageProduct(user, userSource);
+        userProducer.sendMessageUser(user, userSource);
         return response.noContent();
     }
 

@@ -7,6 +7,7 @@ import com.microservices.core.user.UserDTO;
 import com.microservices.subscription.course.CourseDTO;
 import com.microservices.subscription.course.CourseService;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -15,9 +16,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class SubscriptionService {
 
     @Autowired
@@ -61,6 +64,26 @@ public class SubscriptionService {
         Subscription subscription = findSubscriptionById(id).orElseThrow(() -> new ObjectNotFoundException("Course not found"));
         subscription.softDelete();
         subscriptionRepository.save(subscription);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteByUser(Long id) {
+        List<Subscription> subscriptions = subscriptionRepository.findAllByUser(id);
+        subscriptions.forEach(s -> {
+            log.info("Removing subscription: " + s.toString());
+            s.softDelete();
+            subscriptionRepository.save(s);
+        });
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteByCourse(Long id) {
+        List<Subscription> subscriptions = subscriptionRepository.findAllByCourse(id);
+        subscriptions.forEach(s -> {
+            log.info("Removing subscription: " + s.toString());
+            s.softDelete();
+            subscriptionRepository.save(s);
+        });
     }
 
 }
