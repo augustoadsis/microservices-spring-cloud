@@ -35,7 +35,7 @@ public class ContentService {
     }
 
     public Mono<Void> deleteByCourse(Long id) {
-        contentRepository.deleteAll(findByCourse(id));
+        contentRepository.deleteAll(findByCourse(id)).subscribe();
         return Mono.empty();
     }
 }
