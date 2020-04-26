@@ -1,0 +1,4 @@
+docker build . -t microservices-auth
+docker tag microservices-auth localhost:5000/microservices-auth
+docker push localhost:5000/microservices-auth
+
