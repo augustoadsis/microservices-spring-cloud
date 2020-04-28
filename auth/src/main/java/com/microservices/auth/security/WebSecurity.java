@@ -30,6 +30,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         http
                 .cors()
                 .and().csrf().disable().authorizeRequests()
+                .antMatchers("/actuator/health/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .addFilterAt(new JWTAuthenticationFilter("/login", userAuthenticationProvider), UsernamePasswordAuthenticationFilter.class)

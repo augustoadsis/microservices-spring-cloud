@@ -30,8 +30,12 @@ eureka:
   client:
     service-url:
       defaultZone: http://localhost:8081/eureka/
+#      defaultZone: http://discovery/eureka/
     fetch-registry: true
     register-with-eureka: true
 
 zuul:
   sensitive-headers: Cookie
+  host:
+    connect-timeout-millis: 30000
+    socket-timeout-millis: 30000

@@ -1,12 +1,17 @@
 server:
   port: ${PORT:0}
 
+#management:
+#  server:
+#    port: 8888
+
 eureka:
   instance:
     instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
     prefer-ip-address: true
   client:
     service-url:
+#      defaultZone: http://discovery/eureka/
       defaultZone: http://localhost:8081/eureka/
     register-with-eureka: true
 
