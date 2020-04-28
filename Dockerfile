@@ -17,6 +17,5 @@ FROM openjdk:14-jdk-slim
 ARG MODULE
 ENV NAME $MODULE
 COPY --from=build $MODULE-0.0.1-SNAPSHOT.jar $MODULE.jar
-#RUN apt-get update && apt-get install telnet
 
 ENTRYPOINT java -Djava.security.egd=file:/dev/./urandom -jar $NAME.jar

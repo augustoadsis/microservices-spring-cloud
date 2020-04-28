@@ -1,0 +1,14 @@
+spring:
+  profiles:
+    active: kubernetes
+  datasource:
+    url: jdbc:mysql://${DATABASE}:3306/microservices?allowPublicKeyRetrieval=true&sslMode=DISABLED
+    username: ${USERNAME}
+    password: ${PASSWORD}
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    service-url:
+      defaultZone: http://discovery/eureka/

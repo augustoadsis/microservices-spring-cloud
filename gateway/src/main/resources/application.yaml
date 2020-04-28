@@ -30,7 +30,6 @@ eureka:
   client:
     service-url:
       defaultZone: http://localhost:8081/eureka/
-#      defaultZone: http://discovery/eureka/
     fetch-registry: true
     register-with-eureka: true
 
@@ -39,3 +38,17 @@ zuul:
   host:
     connect-timeout-millis: 30000
     socket-timeout-millis: 30000
+
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 60000
+
+ribbon:
+  ReadTimeout: 60000
+  connection-timeout: 60000
+  eureka:
+    enabled: true
