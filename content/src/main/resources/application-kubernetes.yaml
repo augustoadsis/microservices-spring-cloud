@@ -9,7 +9,8 @@ eureka:
 spring:
   profiles:
     active: kubernetes
-  datasourc e:
-    url: ${DATABASE_URI}
-    username: ${DATABASE_USER}
-    password: ${DATABASE_PASSWORD}
+  rabbitmq:
+    host: ${RABBITMQ_URI}
+    port: 5672
+    username: ${RABBITMQ_USER}
+    password: ${RABBITMQ_PASSWORD}

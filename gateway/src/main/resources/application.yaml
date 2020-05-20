@@ -39,16 +39,15 @@ zuul:
     connect-timeout-millis: 30000
     socket-timeout-millis: 30000
 
+ribbon:
+  ReadTimeout: 30000
+  SocketTimeout: 30000
+
 hystrix:
   command:
     default:
       execution:
         isolation:
+          strategy: THREAD
           thread:
-            timeoutInMilliseconds: 60000
-
-ribbon:
-  ReadTimeout: 60000
-  connection-timeout: 60000
-  eureka:
-    enabled: true
+            timeoutInMilliseconds: 30000

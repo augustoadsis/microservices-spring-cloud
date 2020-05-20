@@ -2,9 +2,9 @@ spring:
   profiles:
     active: kubernetes
   datasource:
-    url: jdbc:mysql://${DATABASE}:3306/microservices?allowPublicKeyRetrieval=true&sslMode=DISABLED
-    username: ${USERNAME}
-    password: ${PASSWORD}
+    url: ${DATABASE_URI}
+    username: ${DATABASE_USER}
+    password: ${DATABASE_PASSWORD}
 
 eureka:
   instance:

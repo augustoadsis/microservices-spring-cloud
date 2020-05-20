@@ -45,3 +45,23 @@ spring:
     port: 5672
     username: guest
     password: guest
+
+zuul:
+  sensitive-headers: Cookie
+  host:
+    connect-timeout-millis: 30000
+    socket-timeout-millis: 30000
+
+ribbon:
+  ReadTimeout: 30000
+  SocketTimeout: 30000
+
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          strategy: THREAD
+          thread:
+            timeoutInMilliseconds: 30000
+
